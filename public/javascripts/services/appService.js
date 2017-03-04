@@ -8,11 +8,12 @@ function appService($http) {
   return {
     list: list,
     create: create,
-    edit: edit,
+    edit: edit,	
+	find: find,
     remove: remove
   }
 
-  function list() {
+  function list() {	  
     return $http.get("/products")
     .then(response => {
       return response.data;
@@ -20,23 +21,23 @@ function appService($http) {
   }
 
   function create(product) {
-    return $http.post("/products")
-    .then(response => {
+    return $http.post("/products",product)	
+    .then(response => {			  
       return response.data;
     });
   }
 
   function edit(product) {
-    return $http.put("/products/"+product.id)
-    .then(response => {
+    return $http.put("/products/"+product._id,product)
+    .then(response => {		
       return response.data;
     });
-  }
+  }  
 
-  function remove(product) {
-    return $http.put("/products/"+product.id)
-    .then(response => {
+  function remove(product) {	  
+    return $http.delete("/products/"+product._id)	
+    .then(response => {		
       return response.data;
     });
-  }
+  }    
 }

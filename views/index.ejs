@@ -1,36 +1,71 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src='/javascripts/client.js'></script>
+  <head>    
+	<% include ../views/partials/head %>
   </head>
   <body ng-app='icaApp' ng-controller="appController as app">
-    <md-toolbar>
-      <h2 class="md-toolbar-tools">
-        <span><%= title %></span>
-      </h2>
-    </md-toolbar>
-
-    <div style="height: 5px">
-      <md-progress-linear ng-show="loading" md-mode="indeterminate"></md-progress-linear>
-    </div>
-
+    <header>
+        <% include ../views/partials/header %>
+    </header>
+    
     <md-content layout layout-align="center">
       <md-button flex="none" ng-click="getProducts()">Get Products</md-button>
     </md-content>
-
+	
     <md-list>
-      <md-list-item class="md-2-line" ng-repeat="product in products" ng-href="#">
+      <md-list-item class="md-2-line" ng-repeat="product in products | limitTo:products.limit" ng-href="#">		
         <div class="md-list-item-text" layout="column">
           <h3>{{product.title}}</h3>
-          <p>{{product.description}}</p>
-        </div>
+          <p>{{product.description}}</p>		  		  
+
+		  <!--Edit and Remove Buttons-->
+		  <md-content layout layout-align="center">
+			<!--md-button flex="none" ng-click="removeProduct(product)">Remove </md-button-->									
+			<div class="dialog-demo-content" layout="row" layout-wrap layout-margin layout-align="center">
+				<md-button class="removebutton " ng-click="showConfirm($event,product)"   >
+					Remove
+				</md-button>
+			</div>							
+			<div class="dialog-demo-content" layout="row" layout-wrap layout-margin layout-align="center">
+				<md-button class="editbutton  " flex="none" ng-click="myValue=true">
+					Edit
+				</md-button>
+			</div>							
+		  </md-content>
+		  <!--Edit Screen Zone-->
+		 <div ng-show="myValue" class="ng-hide">
+				<form flex="80" ng-submit="editProduct(product)" md-theme="docs-dark" layout="column" layout-align="center">
+					<md-input-container>          
+					  <label>New Title</label>
+					  <input ng-model="product.title" value="{product.title}" >		  
+					</md-input-container>
+					<md-input-container>  
+					  <label>New Description</label>					
+					  <input ng-model="product.description" value="{product.description}"}>
+					</md-input-container>
+					<!--Buttons to Confirm edition and hide edit screen zone-->
+					<div layout="row" layout-align="center">
+					  <md-button type="submit" flex="40" class="md-raised md-accent" ng-disabled="userForm.$invalid">Confirm Edit</md-button>		  
+					  <md-button flex="none" class="md-raised md-accent" ng-click="myValue=false">Hide Edit</md-button>
+					</div>
+				</form>
+			</div>		  
+        </div>		
+		
         <md-divider ng-if="!$last"></md-divider>
       </md-list-item>
+	  <!-- Load More Button -->
+	  <md-content layout layout-align="center">
+		  <md-divider ng-if="0==products.last">
+			 <md-button class="loadbutton" flex="none" ng-click="loadMore(products)">
+						Load More!
+			</md-button>	
+		  </md-divider>		
+	  </md-content>
+	  
     </md-list>
 
-
+	<!--Input of new products-->
     <div layout>
       <span flex="20"></span>
       <form flex="80" ng-submit="addProduct(product)" md-theme="docs-dark" layout="column" layout-align="center">
@@ -38,7 +73,7 @@
 
         <md-input-container>
           <label>Title</label>
-          <input ng-model="product.title">
+          <input ng-model="product.title" >		  
         </md-input-container>
 
         <md-input-container>
@@ -47,11 +82,15 @@
         </md-input-container>
 
         <div layout="row" layout-align="center">
-          <md-button type="submit" flex="40" class="md-raised md-accent" ng-disabled="userForm.$invalid">ADD PRODUCT</md-button>
+          <md-button type="submit" flex="40" class="md-raised md-accent" ng-disabled="userForm.$invalid">ADD PRODUCT</md-button>		  
         </div>
       </form>
       <span flex="20"></span>
     </div>
-
+	
+	<footer>
+        <% include ../views/partials/footer %>
+    </footer>
+			
   </body>
 </html>
